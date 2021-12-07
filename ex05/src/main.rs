@@ -1,11 +1,15 @@
+mod rules;
 mod structs;
 
-use crate::structs::{*};
+use crate::rules::*;
+use crate::structs::*;
+use std::env;
+use std::str::Chars;
 
 pub fn is_formula_valid(formula: &str) -> Result<Vec<char>, String> {
     let mut count_binary: u32 = 0;
     let mut count_operators: u32 = 0;
-    let mut tmp = formula.chars();
+    let mut tmp: Chars = formula.chars();
 
     let mut variables: Vec<char> = Vec::new();
 
@@ -45,21 +49,13 @@ pub fn is_formula_valid(formula: &str) -> Result<Vec<char>, String> {
 fn negation_normal_form(formula: &str) -> String {
     match is_formula_valid(formula) {
         Ok(mut variables) => {
-            let formula = str::replace(formula, "!!", "");
-            let tree_head: Node = Node::create(formula.chars().rev().collect::<String>().as_str(), false);
+            let formula: String = str::replace(formula, "!!", "");
+            let mut tree_head: Node =
+                Node::create(formula.chars().rev().collect::<String>().as_str(), false);
             variables.sort();
-            tree_head.print();
-            /*let mut var_values: Vec<bool> = Vec::new();
-            var_values.resize(variables.len(), false);
-            for val in variables.iter() {
-                print!("| {} ", *val)
-            }
-            println!("| = |");
-            for _val in variables.iter() {
-                print!("|---")
-            }
-            println!("|---|");
-            truth_table(&tree_head, &variables, &mut var_values, 0);*/
+            tree_head.println();
+            rule(&mut tree_head);
+            return tree_head.to_string();
         }
         Err(s) => {
             eprintln!("Error: {}", s);
@@ -69,5 +65,7 @@ fn negation_normal_form(formula: &str) -> String {
 }
 
 fn main() {
-    println!("{}", negation_normal_form("AB|C&!"));
+    let args: Vec<String> = env::args().collect();
+
+    println!("{}", negation_normal_form(&args[1]));
 }
