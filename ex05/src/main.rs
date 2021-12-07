@@ -53,7 +53,7 @@ fn negation_normal_form(formula: &str) -> String {
             let mut tree_head: Node =
                 Node::create(formula.chars().rev().collect::<String>().as_str(), false);
             variables.sort();
-            tree_head.println();
+            tree_head.print();
             rule(&mut tree_head);
             return tree_head.to_string();
         }

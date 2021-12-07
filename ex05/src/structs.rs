@@ -30,20 +30,11 @@ pub struct Expression {
 }
 
 impl Expression {
+    #[allow(dead_code)]
     pub fn print(&self) {
-        self.value1.print();
-        self.value2.print();
-        print!(
-            "{}{}",
-            match &self.operator {
-                Operator::Conjunction => "&",
-                Operator::Disjunction => "|",
-                Operator::ExclusiveDisjunction => "^",
-                Operator::MaterialCondition => ">",
-                Operator::LogicalEquivalence => "=",
-                Operator::Wrong => "",
-            },
-            if self.negation { "!" } else { "" }
+        println!(
+            "{}",
+            self.to_string()
         );
     }
 
@@ -75,8 +66,9 @@ pub struct Value {
 }
 
 impl Value {
+    #[allow(dead_code)]
     pub fn print(&self) {
-        print!("{}{}", self.variable, if self.negation { "!" } else { "" });
+        println!("{}", self.to_string());
     }
 
     pub fn to_string(&self) -> String {
@@ -94,12 +86,9 @@ pub enum Node {
 }
 
 impl Node {
+    #[allow(dead_code)]
     pub fn print(&self) {
-        match self {
-            V(value) => value.print(),
-            E(expression) => expression.print(),
-            N => {}
-        }
+        println!("{}", self.to_string());
     }
 
     pub fn to_string(&self) -> String {
@@ -108,11 +97,6 @@ impl Node {
             E(expression) => expression.to_string(),
             N => format!(""),
         };
-    }
-
-    pub fn println(&self) {
-        self.print();
-        println!("");
     }
 
     pub fn negate(&mut self) {

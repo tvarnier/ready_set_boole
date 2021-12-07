@@ -1,0 +1,1 @@
+/home/tvarnier/ready_set_boole/ex05/target/debug/ex05: /home/tvarnier/ready_set_boole/ex05/src/main.rs /home/tvarnier/ready_set_boole/ex05/src/rules.rs /home/tvarnier/ready_set_boole/ex05/src/structs.rs
