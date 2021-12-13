@@ -97,3 +97,59 @@ pub fn rule(n: &mut Node) {
         _ => {}
     }
 }
+
+// A ∧ (A ∨ B) = A
+// A ∨ (A ∧ B) = A
+fn absorption(n: &mut Node) -> bool {
+    if let Node::E(expression) = n {
+        if expression.operator == Operator::Conjunction {
+            if let Node::E(ev2) = &expression.value2 {
+                if ev2.operator == Operator::Disjunction && (expression.value1 == ev2.value1 || expression.value1 == ev2.value2) {
+                    *n = expression.value1.clone();
+                    return true;
+                }
+            }
+            if let Node::E(ev1) = &expression.value1 {
+                if ev1.operator == Operator::Disjunction && (expression.value2 == ev1.value1 || expression.value2 == ev1.value2) {
+                    *n = expression.value2.clone();
+                    return true;
+                }
+            }
+        }
+        else if expression.operator == Operator::Disjunction {
+            if let Node::E(ev2) = &expression.value2 {
+                if ev2.operator == Operator::Conjunction && (expression.value1 == ev2.value1 || expression.value1 == ev2.value2) {
+                    *n = expression.value1.clone();
+                    return true;
+                }
+            }
+            if let Node::E(ev1) = &expression.value1 {
+                if ev1.operator == Operator::Conjunction && (expression.value2 == ev1.value1 || expression.value2 == ev1.value2) {
+                    *n = expression.value2.clone();
+                    return true;
+                }
+            }
+        }
+    }
+    return false;
+}
+
+// A ∨ A = A
+// A ∧ A = A
+fn idempotence(n: &mut Node) -> bool {
+    if let Node::E(expression) = n {
+        if matches!(expression.operator, Operator::Conjunction | Operator::Disjunction) && expression.value1 == expression.value2 {
+            *n = expression.value1.clone();
+        }
+    }
+    return false;
+} 
+
+pub fn rule2(n: &mut Node) {
+    if let Node::E(expr) = n {
+        rule2(&mut expr.value1);
+        rule2(&mut expr.value2);
+    }
+    idempotence(n);
+    absorption(n);
+}

@@ -21,7 +21,7 @@ impl Operator {
     }
 }
 
-#[derive(Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Expression {
     pub value1: Node,
     pub value2: Node,
@@ -59,7 +59,7 @@ impl Expression {
     }
 }
 
-#[derive(Clone)]
+#[derive(PartialEq, Clone)]
 pub struct Value {
     pub variable: char,
     pub negation: bool,
@@ -78,7 +78,7 @@ impl Value {
 
 use Node::{E, N, V};
 
-#[derive(Clone)]
+#[derive(PartialEq, Clone)]
 pub enum Node {
     V(Value),
     E(Box<Expression>),

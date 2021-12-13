@@ -54,6 +54,7 @@ fn conjunctive_normal_form(formula: &str) -> String {
                 Node::create(formula.chars().rev().collect::<String>().as_str(), false);
             variables.sort();
             rule(&mut tree_head);
+            rule2(&mut tree_head);
             return tree_head.to_string();
         }
         Err(s) => {
