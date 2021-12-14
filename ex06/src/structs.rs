@@ -1,4 +1,4 @@
-#[derive(PartialEq, Clone)]
+#[derive(PartialEq, Clone, Copy)]
 pub enum Operator {
     Conjunction,
     Disjunction,
@@ -32,10 +32,7 @@ pub struct Expression {
 impl Expression {
     #[allow(dead_code)]
     pub fn print(&self) {
-        println!(
-            "{}",
-            self.to_string()
-        );
+        println!("{}", self.to_string());
     }
 
     pub fn to_string(&self) -> String {
