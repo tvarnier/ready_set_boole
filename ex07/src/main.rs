@@ -99,7 +99,6 @@ fn sat(formula: &str) -> bool {
                 Node::create(formula.chars().rev().collect::<String>().as_str(), false);
             variables.sort();
             rule(&mut tree_head);
-            tree_head.print();
             return is_satisfiable(tree_head, variables);
         }
         Err(s) => {
