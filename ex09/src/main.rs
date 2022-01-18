@@ -48,7 +48,7 @@ pub fn is_formula_valid(formula: &str, set_len: usize) -> Result<Vec<char>, Stri
     };
 }
 
-fn create_set_map(variables: Vec<char>, sets: &Vec<Vec<i32>>) -> HashMap<char, Vec<i32>> {
+fn create_set_map(variables: Vec<char>, sets: Vec<Vec<i32>>) -> HashMap<char, Vec<i32>> {
     let mut set_map : HashMap<char, Vec<i32>> = HashMap::new();
     for i in 0..sets.len() {
         set_map.insert(variables[i], sets[i].clone());
@@ -100,7 +100,7 @@ fn eval(value: &Node, set_map: &HashMap<char, Vec<i32>>) -> Vec<i32> {
     }
 }
 
-fn eval_set(formula: &str, sets: &Vec<Vec<i32>>) -> Vec<i32> {
+fn eval_set(formula: &str, sets: Vec<Vec<i32>>) -> Vec<i32> {
     match is_formula_valid(formula, sets.len()) {
         Ok(mut variables) => {
             let formula: String = str::replace(formula, "!!", "");
@@ -128,17 +128,17 @@ fn print_res(res: Vec<i32>) {
 
 fn main() {
     let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2), vec!(0, 3, 4));
-    let result = eval_set("AB&", &sets);
+    let result = eval_set("AB&", sets);
     print_res(result);
     // [0]
 
     let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2), vec!(3, 4, 5));
-    let result = eval_set("AB|", &sets);
+    let result = eval_set("AB|", sets);
     print_res(result);
     // [0, 1, 2, 3, 4, 5]
 
     let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2));
-    let result = eval_set("A!", &sets);
+    let result = eval_set("A!", sets);
     print_res(result);
     // []
 }
