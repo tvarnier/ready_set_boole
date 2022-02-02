@@ -15,7 +15,18 @@ fn main() {
     for _i in 0..15  {
         println!(" -> {} = {} : {:b}", _i, gray_code( _i), gray_code( _i));
     }
-    println!(" -> {} = {} : {:b}", 2147483648 as u32, gray_code( 2147483648), gray_code( 2147483648));
+    println!(" -> {} = {} : {:b}", u32::MAX / 2 + 1, gray_code( u32::MAX / 2 + 1 ), gray_code( u32::MAX / 2 + 1));
     println!(" -> {} = {} : {:b}", u32::MAX, gray_code( u32::MAX), gray_code( u32::MAX));
 }
 
+#[cfg(test)]
+mod tests {
+    use gray_codes::GrayCode32;
+    use super::*;
+    #[test]
+    fn basic() {
+        for i in 0..1000 {
+            assert_eq!(gray_code(i), GrayCode32::from_index(i));
+        }
+    }
+}

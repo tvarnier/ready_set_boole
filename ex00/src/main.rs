@@ -19,12 +19,27 @@ fn main() {
     println!("          3 +  1 = {}",   adder( 3,  1));
     println!("         10 +  3 = {}",   adder(10,  3));
     println!("         37 + 21 = {}",   adder(37, 21));
-    println!(" {} +  2 = {}", u32::MAX, adder(u32::MAX, 2));
+    println!(" {} +  1 = {}", u32::MAX, adder(u32::MAX, 1));
+}
 
-    for _i in 0..10 {
-        println!(" -> {}", _i);
-        for _y in 0..10 {
-            println!("      + {} = {}", _y, adder( _i, _y));
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn basic() {
+        for i in 0..100 {
+            for y in 0..100 {
+                assert_eq!(adder(i, y), i + y);
+            }
         }
+    }
+
+    #[test]
+    fn overflow() {
+        let max : u32 = u32::MAX;
+        assert_eq!(adder(u32::MAX, 0), max.wrapping_add(0));
+        assert_eq!(adder(u32::MAX, 1), max.wrapping_add(1));
+        assert_eq!(adder(u32::MAX, u32::MAX), max.wrapping_add(max));
+        assert_eq!(adder(adder(u32::MAX, u32::MAX), u32::MAX), max.wrapping_add(max).wrapping_add(max));
     }
 }
