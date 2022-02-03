@@ -3,8 +3,8 @@ mod structs;
 
 use crate::rules::*;
 use crate::structs::*;
-use std::str::Chars;
 use std::collections::HashMap;
+use std::str::Chars;
 
 pub fn is_formula_valid(formula: &str, set_len: usize) -> Result<Vec<char>, String> {
     let mut count_binary: u32 = 0;
@@ -49,7 +49,7 @@ pub fn is_formula_valid(formula: &str, set_len: usize) -> Result<Vec<char>, Stri
 }
 
 fn create_set_map(variables: Vec<char>, sets: Vec<Vec<i32>>) -> HashMap<char, Vec<i32>> {
-    let mut set_map : HashMap<char, Vec<i32>> = HashMap::new();
+    let mut set_map: HashMap<char, Vec<i32>> = HashMap::new();
     for i in 0..sets.len() {
         set_map.insert(variables[i], sets[i].clone());
     }
@@ -72,11 +72,15 @@ fn vec_only_dup(arr: Vec<i32>) -> Vec<i32> {
 fn eval(value: &Node, set_map: &HashMap<char, Vec<i32>>) -> Vec<i32> {
     match value {
         structs::Node::V(v) => {
-            return if v.negation { Vec::new() } else { set_map[&v.variable].clone() };
-        },
+            return if v.negation {
+                Vec::new()
+            } else {
+                set_map[&v.variable].clone()
+            };
+        }
         structs::Node::E(expression) => {
-            let v1_value : Vec<i32> = eval(&expression.value1, set_map);
-            let mut v2_value : Vec<i32> = eval(&expression.value2, set_map);
+            let v1_value: Vec<i32> = eval(&expression.value1, set_map);
+            let mut v2_value: Vec<i32> = eval(&expression.value2, set_map);
 
             let res: Vec<i32> = match expression.operator {
                 Operator::Conjunction => {
@@ -84,18 +88,18 @@ fn eval(value: &Node, set_map: &HashMap<char, Vec<i32>>) -> Vec<i32> {
                     tmp.append(&mut v2_value);
                     tmp.sort();
                     vec_only_dup(tmp)
-                },
+                }
                 Operator::Disjunction => {
                     let mut tmp: Vec<i32> = v1_value;
                     tmp.append(&mut v2_value);
                     tmp.sort();
                     tmp.dedup();
                     tmp
-                },
+                }
                 _ => Vec::new(),
             };
             return if expression.negation { Vec::new() } else { res };
-        },
+        }
         structs::Node::N => return Vec::new(),
     }
 }
@@ -127,18 +131,69 @@ fn print_res(res: Vec<i32>) {
 }
 
 fn main() {
-    let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2), vec!(0, 3, 4));
+    let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2], vec![0, 3, 4]];
     let result = eval_set("AB&", sets);
     print_res(result);
     // [0]
 
-    let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2), vec!(3, 4, 5));
+    let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2], vec![3, 4, 5]];
     let result = eval_set("AB|", sets);
     print_res(result);
     // [0, 1, 2, 3, 4, 5]
 
-    let sets: Vec<Vec<i32>> = vec!(vec!(0, 1, 2));
+    let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2]];
     let result = eval_set("A!", sets);
     print_res(result);
     // []
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn conjunction() {
+        assert_eq!(eval_set("AB&", vec!(vec!(0, 1, 2), vec!(0, 3, 4))), vec!(0));
+    }
+
+    #[test]
+    fn disjunction() {
+        assert_eq!(
+            eval_set("AB|", vec!(vec!(0, 1, 2), vec!(0, 3, 4))),
+            vec!(0, 1, 2, 3, 4)
+        );
+    }
+
+    #[test]
+    fn exclusive_disjunction() {
+        assert_eq!(eval_set("AB^", vec!(vec!(0, 1, 2), vec!(0, 3, 4))), vec!());
+    }
+
+    #[test]
+    fn material_condition() {
+        assert_eq!(
+            eval_set("AB>", vec!(vec!(0, 1, 2), vec!(0, 3, 4))),
+            vec!(0, 3, 4)
+        );
+    }
+
+    #[test]
+    fn logical_equivalence() {
+        assert_eq!(eval_set("AB=", vec!(vec!(0, 1, 2), vec!(0, 3, 4))), vec!(0));
+    }
+
+    #[test]
+    fn example() {
+        let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2], vec![0, 3, 4]];
+        let result = eval_set("AB&", sets);
+        assert_eq!(result, vec!(0));
+
+        let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2], vec![3, 4, 5]];
+        let result = eval_set("AB|", sets);
+        assert_eq!(result, vec!(0, 1, 2, 3, 4, 5));
+
+        let sets: Vec<Vec<i32>> = vec![vec![0, 1, 2]];
+        let result = eval_set("A!", sets);
+        assert_eq!(result, vec!());
+    }
 }

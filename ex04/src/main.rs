@@ -181,5 +181,16 @@ fn print_truth_table(formula: &str) {
 }
 
 fn main() {
-    print_truth_table("AB&C|");
+    println!("\nAB&");
+    print_truth_table("AB&");
+    println!("\nAB|");
+    print_truth_table("AB|");
+    println!("\nAB^");
+    print_truth_table("AB^");
+    println!("\nAB>");
+    print_truth_table("AB>");
+    println!("\nAB=");
+    print_truth_table("AB=");
+    println!("\nABC!&|DEF^>=");
+    print_truth_table("ABC!&|DEF^>=");
 }

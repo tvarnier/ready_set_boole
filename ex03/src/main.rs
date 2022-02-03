@@ -68,7 +68,7 @@ fn create_tree(formula: &str) -> Value {
         match c {
             '0' => return Value::V(false),
             '1' => return Value::V(true),
-            '&' | '|' | '^' | '>' | '<' | '=' => {
+            '&' | '|' | '^' | '>' | '=' => {
                 let n: usize = expression_length(&formula[1..]) + 1;
                 return Value::E(Box::new(Expression {
                     v1: create_tree(&formula[n..]),
@@ -135,14 +135,61 @@ fn eval_formula(formula: &str) -> bool {
 }
 
 fn main() {
-    println!("{}\n", eval_formula("10&"));
-    // false
-    println!("{}\n", eval_formula("10|"));
+    println!("{}", eval_formula("101!&|101^>="));
     // true
-    println!("{}\n", eval_formula("11>"));
+    println!("{}", eval_formula("1!011|&="));
     // true
-    println!("{}\n", eval_formula("10="));
-    // false
-    println!("{}\n", eval_formula("1!011|&="));
-    // true
+    println!("{}", eval_formula("1011||="));
+    //true
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn conjunction() {
+        assert_eq!(eval_formula("00&"), false);
+        assert_eq!(eval_formula("01&"), false);
+        assert_eq!(eval_formula("10&"), false);
+        assert_eq!(eval_formula("11&"), true);
+    }
+
+    #[test]
+    fn disjunction() {
+        assert_eq!(eval_formula("00|"), false);
+        assert_eq!(eval_formula("01|"), true);
+        assert_eq!(eval_formula("10|"), true);
+        assert_eq!(eval_formula("11|"), true);
+    }
+
+    #[test]
+    fn exclusive_disjunction() {
+        assert_eq!(eval_formula("00^"), false);
+        assert_eq!(eval_formula("01^"), true);
+        assert_eq!(eval_formula("10^"), true);
+        assert_eq!(eval_formula("11^"), false);
+    }
+
+    #[test]
+    fn material_condition() {
+        assert_eq!(eval_formula("00>"), true);
+        assert_eq!(eval_formula("01>"), true);
+        assert_eq!(eval_formula("10>"), false);
+        assert_eq!(eval_formula("11>"), true);
+    }
+
+    #[test]
+    fn logical_equivalence() {
+        assert_eq!(eval_formula("00="), true);
+        assert_eq!(eval_formula("01="), false);
+        assert_eq!(eval_formula("10="), false);
+        assert_eq!(eval_formula("11="), true);
+    }
+
+    #[test]
+    fn complex_formula() {
+        assert_eq!(eval_formula("101!&|101^>="), true);
+        assert_eq!(eval_formula("101!&|"), true);
+        assert_eq!(eval_formula("1011||="), true);
+    }
 }

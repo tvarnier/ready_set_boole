@@ -51,10 +51,10 @@ fn eval(value: &Node, variables: &Vec<char>, var_values: &Vec<bool>) -> bool {
         structs::Node::V(v) => {
             let res: bool = var_values[variables.iter().position(|&r| r == v.variable).unwrap()];
             return if v.negation { !res } else { res };
-        },
+        }
         structs::Node::E(expression) => {
-            let v1_value : bool = eval(&expression.value1, variables, var_values);
-            let v2_value : bool = eval(&expression.value2, variables, var_values);
+            let v1_value: bool = eval(&expression.value1, variables, var_values);
+            let v2_value: bool = eval(&expression.value2, variables, var_values);
 
             let res: bool = match expression.operator {
                 Operator::Conjunction => v1_value & v2_value,
@@ -62,24 +62,37 @@ fn eval(value: &Node, variables: &Vec<char>, var_values: &Vec<bool>) -> bool {
                 _ => false,
             };
             return if expression.negation { !res } else { res };
-        },
+        }
         structs::Node::N => return false,
     }
 }
 
-fn loop_values(tree_head: &Node, variables: &Vec<char>, var_values: &mut Vec<bool>, l: usize) -> bool {
+fn loop_values(
+    tree_head: &Node,
+    variables: &Vec<char>,
+    var_values: &mut Vec<bool>,
+    l: usize,
+) -> bool {
     var_values[l] = false;
     if l + 1 == variables.len() {
-        if eval(tree_head, variables, &var_values) { return true; }
+        if eval(tree_head, variables, &var_values) {
+            return true;
+        }
     } else {
-        if loop_values(tree_head, variables, var_values, l + 1) { return true; }
+        if loop_values(tree_head, variables, var_values, l + 1) {
+            return true;
+        }
     }
 
     var_values[l] = true;
     if l + 1 == variables.len() {
-        if eval(tree_head, variables, &var_values) { return true; }
+        if eval(tree_head, variables, &var_values) {
+            return true;
+        }
     } else {
-        if loop_values(tree_head, variables, var_values, l + 1) { return true; }
+        if loop_values(tree_head, variables, var_values, l + 1) {
+            return true;
+        }
     }
 
     return false;
@@ -88,7 +101,7 @@ fn loop_values(tree_head: &Node, variables: &Vec<char>, var_values: &mut Vec<boo
 fn is_satisfiable(tree_head: Node, variables: Vec<char>) -> bool {
     let mut var_values: Vec<bool> = Vec::new();
     var_values.resize(variables.len(), false);
-    return loop_values (&tree_head, &variables, &mut var_values, 0);
+    return loop_values(&tree_head, &variables, &mut var_values, 0);
 }
 
 fn sat(formula: &str) -> bool {
@@ -112,4 +125,17 @@ fn main() {
     let args: Vec<String> = env::args().collect();
 
     println!("{}", sat(&args[1]));
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn examples() {
+        assert_eq!(sat("AB|"), true);
+        assert_eq!(sat("AB&"), true);
+        assert_eq!(sat("AA!&"), false);
+        assert_eq!(sat("AA^"), false);
+    }
 }

@@ -69,3 +69,66 @@ fn main() {
 
     println!("{}", conjunctive_normal_form(&args[1]));
 }
+
+mod tests {
+    use super::*;
+
+    #[test]
+    fn morgan_law_con() {
+        assert_eq!(conjunctive_normal_form("AB&!"), "A!B!|");
+    }
+
+    #[test]
+    fn morgan_law_dis() {
+        assert_eq!(conjunctive_normal_form("AB|!"), "A!B!&");
+    }
+
+    #[test]
+    fn equivalence() {
+        assert_eq!(conjunctive_normal_form("AB="), "A!B|B!A|&");
+    }
+
+    #[test]
+    fn cond() {
+        assert_eq!(conjunctive_normal_form("AB>"), "A!B|");
+    }
+
+    #[test]
+    fn excl() {
+        assert_eq!(conjunctive_normal_form("AB^"), "AB|A!B!|&");
+    }
+
+    #[test]
+    fn associativity() {
+        assert_eq!(conjunctive_normal_form("AB|C|"), "ABC||");
+    }
+
+    #[test]
+    fn distributivity() {
+        assert_eq!(conjunctive_normal_form("AB|AC|&"), "ABC&|");
+        assert_eq!(conjunctive_normal_form("AB&AC&|"), "ABC|&");
+    }
+
+    #[test]
+    fn absorption() {
+        assert_eq!(conjunctive_normal_form("AAB|&"), "A");
+        assert_eq!(conjunctive_normal_form("AAB&|"), "A");
+    }
+
+    #[test]
+    fn idempotence() {
+        assert_eq!(conjunctive_normal_form("AA|"), "A");
+        assert_eq!(conjunctive_normal_form("AA&"), "A");
+    }
+
+    #[test]
+    fn examples() {
+        assert_eq!(conjunctive_normal_form("AB&!"), "A!B!|");
+        assert_eq!(conjunctive_normal_form("AB|!"), "A!B!&");
+        assert_eq!(conjunctive_normal_form("AB|C&"), "AB|C&");
+        assert_eq!(conjunctive_normal_form("AB|C|D|"), "ABCD|||");
+        assert_eq!(conjunctive_normal_form("AB&C&D&"), "ABCD&&&");
+        assert_eq!(conjunctive_normal_form("AB&!C!|"), "A!B!C!||");
+        assert_eq!(conjunctive_normal_form("AB|!C!&"), "A!B!C!&&");
+    }
+}

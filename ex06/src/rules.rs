@@ -37,8 +37,8 @@ fn equivalence_to_con(expression: &mut Expression) -> bool {
             negation: false,
         }));
         expression.value2 = Node::E(Box::new(Expression {
-            value1: tmp1,
-            value2: tmp2,
+            value1: tmp2,
+            value2: tmp1,
             operator: Operator::MaterialCondition,
             negation: false,
         }));

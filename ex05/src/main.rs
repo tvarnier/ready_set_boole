@@ -69,3 +69,42 @@ fn main() {
 
     println!("{}", negation_normal_form(&args[1]));
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn morgan_law_con() {
+        assert_eq!(negation_normal_form("AB&!"), "A!B!|");
+    }
+
+    #[test]
+    fn morgan_law_dis() {
+        assert_eq!(negation_normal_form("AB|!"), "A!B!&");
+    }
+
+    #[test]
+    fn equivalence() {
+        assert_eq!(negation_normal_form("AB="), "A!B|B!A|&");
+    }
+
+    #[test]
+    fn cond() {
+        assert_eq!(negation_normal_form("AB>"), "A!B|");
+    }
+
+    #[test]
+    fn excl() {
+        assert_eq!(negation_normal_form("AB^"), "AB|A!B!|&");
+    }
+
+    #[test]
+    fn examples() {
+        assert_eq!(negation_normal_form("AB&!"), "A!B!|");
+        assert_eq!(negation_normal_form("AB|!"), "A!B!&");
+        assert_eq!(negation_normal_form("AB>"), "A!B|");
+        assert_eq!(negation_normal_form("AB="), "A!B|B!A|&");
+        assert_eq!(negation_normal_form("AB|C&!"), "A!B!&C!|");
+    }
+}
